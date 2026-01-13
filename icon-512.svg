@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect rx="48" ry="48" width="512" height="512" fill="#f5d784"/>
+  <circle cx="340" cy="180" r="120" fill="#0f5f73" opacity="0.95"/>
+  <text x="180" y="280" font-family="Comfortaa, sans-serif" font-size="120" fill="#0f5f73" font-weight="700">€лв</text>
+  <circle cx="380" cy="170" r="28" fill="#ffd97a"/>
+</svg>
