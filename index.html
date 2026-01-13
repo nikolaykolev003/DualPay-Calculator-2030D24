@@ -2,217 +2,216 @@
 <html lang="bg">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#071130" />
-  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>DualPay Calculator 2030LN — Ресто (BGN / EUR)</title>
 
-  <!-- PWA / iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="DualPay" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <title>DualPay Calculator — BGN ⇄ EUR</title>
-
-  <!-- Tailwind -->
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Manifest (served from root) -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-512.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="DualPay Calculator">
+
+  <meta name="description" content="DualPay Calculator — PWA за изчисляване на ресто в BGN и EUR при фиксиран курс 1.95583">
 
   <style>
     :root{
-      --bg1:#0f172a;
-      --bg2:#020617;
-      --accent-blue:#0ea5e9;
-      --accent-gold:#f59e0b;
-      --muted:#94a3b8;
-      --rate:1.95583;
+      --accent: #0f5f73;
+      --bg-gradient: linear-gradient(135deg, rgba(232,245,247,1) 0%, rgba(245,251,252,1) 100%);
+      --tile: #f5d784;
+      --muted: #6b7280;
+      --rate: 1.95583;
     }
-
-    body{
-      min-height:100vh;
-      background:linear-gradient(180deg,var(--bg1),var(--bg2));
-      color:#e5edf7;
-      font-family:Inter,system-ui;
+    html,body,#app { height:100%; }
+    body {
+      font-family: 'Montserrat', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg-gradient);
+      -webkit-font-smoothing:antialiased;
+      margin:0; padding:1.2rem;
     }
-
-    .font-display{font-family:"Baloo 2",cursive}
-    .app{
-      backdrop-filter:blur(10px);
-      background:rgba(255,255,255,.04);
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow:0 20px 40px rgba(0,0,0,.6);
-    }
-
-    .input{
-      background:linear-gradient(180deg,#eef2f7,#e6ebf3);
-      color:#020617;
-      padding:14px 16px;
-      border-radius:12px;
-      width:100%;
-    }
-
-    .segmented{
-      display:inline-flex;
-      background:rgba(255,255,255,.08);
-      border-radius:999px;
-      padding:4px;
-      gap:4px;
-    }
-    .segmented button{
-      padding:6px 14px;
-      border-radius:999px;
-      font-weight:600;
-      color:var(--muted);
-    }
-    .segmented .active{
-      background:linear-gradient(90deg,var(--accent-blue),var(--accent-gold));
-      color:#020617;
-    }
-
-    .pill{
-      background:rgba(255,255,255,.06);
-      padding:8px 12px;
-      border-radius:999px;
-    }
-
-    .error{
-      background:rgba(255,0,60,.12);
-      border:1px solid rgba(255,0,60,.3);
-      border-radius:12px;
-      padding:12px;
-    }
+    .app-window { max-width:520px; margin:auto; border-radius:18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.45));
+      box-shadow: 0 10px 30px rgba(10,20,30,0.12); backdrop-filter: blur(10px) saturate(110%); overflow:hidden; }
+    .app-header{ display:flex; gap:.75rem; align-items:center; padding:1rem; }
+    .logo-tile{ width:52px; height:52px; border-radius:12px; background:var(--tile); display:flex; align-items:center; justify-content:center;
+      font-family:'Comfortaa'; color:var(--accent); font-weight:700; font-size:18px; box-shadow:0 6px 18px rgba(15,95,115,0.12); }
+    .app-title{ font-family:'Comfortaa'; color:#073744; font-size:1.05rem; }
+    .small-muted{ font-size:0.82rem; color:var(--muted); }
+    .pattern{ position:absolute; inset:0; pointer-events:none; z-index:0; opacity:0.08; color:#394047; display:grid; grid-template-columns: repeat(12, 1fr); gap:.5rem; padding:2rem; mix-blend-mode:multiply; }
+    .pattern span{ display:block; text-align:center; font-size:18px; transform-origin:center; animation: float 8s ease-in-out infinite; }
+    @keyframes float { 0%{transform:translateY(0) translateX(0) rotate(0) scale(1);} 50%{transform:translateY(-6px) translateX(4px) rotate(2deg) scale(1.03);} 100%{transform:translateY(0) translateX(0) rotate(0) scale(1);} }
+    .card{ padding:1rem; position:relative; z-index:2; }
+    .input{ background: rgba(255,255,255,0.7); border-radius:12px; padding:.65rem .75rem; display:flex; gap:.5rem; align-items:center; box-shadow:0 6px 16px rgba(12,18,24,0.06); border:1px solid rgba(8,12,15,0.04); }
+    .result{ transition: all .28s cubic-bezier(.2,.9,.2,1); transform-origin:top; overflow:hidden; }
+    .hidden-result{ opacity:0; max-height:0; transform:translateY(-6px); }
+    .show-result{ opacity:1; max-height:300px; transform:translateY(0); }
+    .segmented{ display:inline-flex; background: rgba(10,20,20,0.04); padding:4px; border-radius:10px; }
+    .segmented button{ padding:6px 12px; border-radius:8px; border:none; font-weight:600; cursor:pointer; font-size:.95rem; }
+    .segmented .active{ background:var(--accent); color:white; box-shadow:0 4px 12px rgba(11,55,60,0.18); }
+    .error{ background:#fee2e2; color:#991b1b; border:1px solid #fecaca; padding:.6rem; border-radius:10px; font-weight:600; }
+    footer{ font-size:.82rem; color:var(--muted); padding:.8rem 1rem; text-align:center; border-top:1px dashed rgba(8,12,15,0.04); }
+    @media (max-width:420px){ body{ padding:.9rem; } .logo-tile{ width:48px;height:48px;font-size:16px; } }
   </style>
 </head>
+<body>
+  <div id="app" class="min-h-screen flex items-center justify-center relative">
+    <div class="pattern" aria-hidden="true" id="pattern"></div>
 
-<body class="flex items-center justify-center p-4">
-
-<main class="app max-w-xl w-full p-6">
-
-  <!-- Header -->
-  <header class="flex gap-4 items-center mb-6">
-    <div id="appIcon" class="w-16 h-16 rounded-xl overflow-hidden"></div>
-    <div>
-      <h1 class="font-display text-2xl">DualPay Calculator</h1>
-      <p class="text-sm text-slate-400">BGN ⇄ EUR Ресто</p>
-    </div>
-  </header>
-
-  <!-- Inputs -->
-  <label class="text-sm font-semibold">Сума за плащане</label>
-  <div class="flex gap-2 mt-1">
-    <input id="amount" type="number" step="0.01" class="input">
-    <select id="amountCurrency" class="input w-28">
-      <option value="BGN">BGN</option>
-      <option value="EUR">EUR</option>
-    </select>
-  </div>
-
-  <div class="grid grid-cols-2 gap-3 mt-4">
-    <input id="paidBGN" type="number" placeholder="Платено BGN" class="input">
-    <input id="paidEUR" type="number" placeholder="Платено EUR" class="input">
-  </div>
-
-  <div class="flex justify-between items-center mt-4">
-    <span class="text-sm text-slate-400">Покажи рестото в:</span>
-    <div class="segmented">
-      <button id="showBGN" class="active">BGN</button>
-      <button id="showEUR">EUR</button>
-    </div>
-  </div>
-
-  <div id="messageArea" class="mt-4"></div>
-
-  <footer class="mt-6 pt-4 border-t border-white/10 text-sm text-slate-400 flex justify-between">
-    <span>1 EUR = 1.95583 BGN</span>
-    <span>9Д • №24</span>
-  </footer>
-</main>
-
-<script>
-const RATE = 1.95583;
-const $ = id => document.getElementById(id);
-
-const amount=$("amount"), amountCurrency=$("amountCurrency");
-const paidBGN=$("paidBGN"), paidEUR=$("paidEUR");
-const message=$("messageArea");
-let display="BGN";
-
-function fmt(v,c){return v.toLocaleString("bg-BG",{minimumFractionDigits:2})+(c==="BGN"?" лв":" €");}
-
-function calc(){
-  const a=+amount.value||0;
-  if(!a){message.innerHTML='<div class="pill">Въведи сума</div>';return;}
-  const paid = amountCurrency.value==="BGN"
-    ? (+paidBGN.value||0)+(+paidEUR.value||0)*RATE
-    : (+paidEUR.value||0)+(+paidBGN.value||0)/RATE;
-
-  if(paid<a){message.innerHTML='<div class="error">Недостатъчна сума</div>';return;}
-
-  let change=paid-a;
-  let bgn=amountCurrency.value==="BGN"?change:change*RATE;
-  let eur=amountCurrency.value==="EUR"?change:change/RATE;
-
-  message.innerHTML=`
-    <div class="pill">
-      <div class="text-xl font-display">
-        ${display==="BGN"?fmt(bgn,"BGN"):fmt(eur,"EUR")}
+    <div class="app-window w-full max-w-md relative" role="application" aria-label="DualPay Calculator">
+      <div class="app-header">
+        <div class="logo-tile" aria-hidden="true">€лв</div>
+        <div>
+          <div class="app-title">DualPay Calculator 2030LN</div>
+          <div class="small-muted">Ресто в BGN и EUR — Курс фиксиран: 1.95583</div>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:0.5rem;">
+          <button id="installBtn" class="px-3 py-1 rounded-md text-sm font-semibold border border-transparent text-white" style="background:var(--accent);">Инсталирай</button>
+        </div>
       </div>
-      <div class="text-sm text-slate-400">
-        ${display==="BGN"?fmt(eur,"EUR"):fmt(bgn,"BGN")}
+
+      <div class="card">
+        <label class="small-muted mb-1 block">Сума за плащане</label>
+        <div class="input mb-3" style="background: rgba(227,243,247,0.85);">
+          <input id="amount" inputmode="decimal" type="number" step="0.01" min="0" placeholder="0.00" class="w-full bg-transparent outline-none text-2xl font-semibold" aria-label="Сума за плащане">
+          <select id="amountCurrency" class="currency-select" aria-label="Валута за сумата">
+            <option value="BGN">BGN</option>
+            <option value="EUR" selected>EUR</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label class="small-muted mb-1 block">Платено в лв</label>
+            <div class="input">
+              <input id="paidBgn" inputmode="decimal" type="number" step="0.01" min="0" placeholder="0.00" class="w-full bg-transparent outline-none" aria-label="Платено в лева">
+              <div class="small-muted">лв</div>
+            </div>
+          </div>
+          <div>
+            <label class="small-muted mb-1 block">Платено в €</label>
+            <div class="input">
+              <input id="paidEur" inputmode="decimal" type="number" step="0.01" min="0" placeholder="0.00" class="w-full bg-transparent outline-none" aria-label="Платено в евро">
+              <div class="small-muted">€</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 flex items-center justify-between">
+          <div class="small-muted">Покажи рестото като</div>
+          <div class="segmented" role="tablist" aria-label="Избор на валута за рестото">
+            <button id="showEur" class="active" role="tab" aria-selected="true">EUR</button>
+            <button id="showBgn" role="tab" aria-selected="false">BGN</button>
+          </div>
+        </div>
+
+        <div id="resultPanel" class="result hidden-result">
+          <div id="errorBox" class="error mb-3 hidden">Недостатъчна платена сума</div>
+          <div class="input mb-3">
+            <div>
+              <div class="small-muted">Ресто</div>
+              <div id="changeMain" class="text-2xl font-bold">0.00 EUR</div>
+              <div id="changeSecondary" class="small-muted">0.00 BGN</div>
+            </div>
+            <div style="margin-left:auto; display:flex; align-items:center;">
+              <button id="copyChange" class="px-3 py-2 rounded-md text-sm font-semibold border border-transparent text-white" style="background:var(--accent);">Копирай</button>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>`;
-}
 
-["input","change"].forEach(e=>{
-  [amount,paidBGN,paidEUR,amountCurrency].forEach(el=>el.addEventListener(e,calc))
-});
+      <footer>Курс: 1 EUR = 1.95583 BGN • © Николай Колев</footer>
+    </div>
+  </div>
 
-$("showBGN").onclick=()=>{display="BGN";$("showBGN").classList.add("active");$("showEUR").classList.remove("active");calc();}
-$("showEUR").onclick=()=>{display="EUR";$("showEUR").classList.add("active");$("showBGN").classList.remove("active");calc();}
+  <script>
+  (function(){
+    const RATE = 1.95583;
+    const amountEl = document.getElementById('amount');
+    const amountCurrencyEl = document.getElementById('amountCurrency');
+    const paidBgnEl = document.getElementById('paidBgn');
+    const paidEurEl = document.getElementById('paidEur');
+    const resultPanel = document.getElementById('resultPanel');
+    const errorBox = document.getElementById('errorBox');
+    const changeMain = document.getElementById('changeMain');
+    const changeSecondary = document.getElementById('changeSecondary');
+    const showEurBtn = document.getElementById('showEur');
+    const showBgnBtn = document.getElementById('showBgn');
+    const installBtn = document.getElementById('installBtn');
+    const copyBtn = document.getElementById('copyChange');
+    const pattern = document.getElementById('pattern');
+    let displayCurrency = 'EUR';
+    let deferredPrompt = null;
 
-/* ===== ICON + MANIFEST (без service worker registration) ===== */
-const iconSVG = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<defs>
-<linearGradient id="g" x1="0" x2="1">
-<stop offset="0" stop-color="#0ea5e9"/>
-<stop offset="1" stop-color="#f59e0b"/>
-</linearGradient>
-</defs>
-<rect width="512" height="512" rx="96" fill="url(#g)"/>
-<text x="256" y="300" text-anchor="middle"
- font-size="200" fill="white" font-family="Baloo 2">€лв</text>
-</svg>`;
-const iconURL="data:image/svg+xml;utf8,"+encodeURIComponent(iconSVG);
-$("appIcon").innerHTML=`<img src="${iconURL}" class="w-full h-full">`;
+    // background pattern
+    const symbols = ['€','лв','€','лв','€','лв','€','лв','€','лв','€','лв'];
+    symbols.forEach((s,i)=>{ const sp = document.createElement('span'); sp.textContent = s; sp.style.animationDelay = (i%3)*0.6 + 's'; pattern.appendChild(sp); });
 
-const manifest={
-  name:"DualPay Calculator",
-  short_name:"DualPay",
-  start_url:".",
-  display:"standalone",
-  background_color:"#071130",
-  theme_color:"#071130",
-  icons:[{src:iconURL,sizes:"512x512",type:"image/svg+xml"}]
-};
-const mBlob=new Blob([JSON.stringify(manifest)],{type:"application/json"});
-const mURL=URL.createObjectURL(mBlob);
-const ml=document.createElement("link");
-ml.rel="manifest";ml.href=mURL;document.head.appendChild(ml);
-</script>
+    function toFloat(v){ const n = parseFloat(String(v).replace(',', '.')); return isNaN(n) ? 0 : n; }
 
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('./service-worker.js')
-      .then(() => console.log('Service Worker registered'))
-      .catch(err => console.error('SW error:', err));
-  });
-}
-</script>
+    function computeAndShow(){
+      const amount = toFloat(amountEl.value);
+      const amountCurrency = amountCurrencyEl.value;
+      const paidBgn = toFloat(paidBgnEl.value);
+      const paidEur = toFloat(paidEurEl.value);
+      const amountEur = (amountCurrency === 'BGN') ? (amount / RATE) : amount;
+      const paidTotalEur = paidEur + (paidBgn / RATE);
+      const changeEur = +(paidTotalEur - amountEur).toFixed(6);
 
+      if (amount === 0 && paidBgn === 0 && paidEur === 0) {
+        resultPanel.classList.remove('show-result'); resultPanel.classList.add('hidden-result'); return;
+      } else { resultPanel.classList.remove('hidden-result'); resultPanel.classList.add('show-result'); }
+
+      if (changeEur < 0) {
+        errorBox.classList.remove('hidden'); errorBox.textContent = 'Недостатъчна платена сума';
+        changeMain.textContent = `- ${Math.abs(changeEur).toFixed(2)} EUR`;
+        changeSecondary.textContent = `${(changeEur * RATE).toFixed(2)} BGN`;
+        return;
+      } else { errorBox.classList.add('hidden'); }
+
+      if (displayCurrency === 'EUR') {
+        changeMain.textContent = `${changeEur.toFixed(2)} EUR`;
+        changeSecondary.textContent = `${(changeEur * RATE).toFixed(2)} BGN`;
+      } else {
+        const changeBgn = +(changeEur * RATE).toFixed(6);
+        changeMain.textContent = `${changeBgn.toFixed(2)} BGN`;
+        changeSecondary.textContent = `${(changeBgn / RATE).toFixed(2)} EUR`;
+      }
+    }
+
+    showEurBtn.addEventListener('click', ()=>{ displayCurrency='EUR'; setActiveSegment(); });
+    showBgnBtn.addEventListener('click', ()=>{ displayCurrency='BGN'; setActiveSegment(); });
+    function setActiveSegment(){ if(displayCurrency==='EUR'){ showEurBtn.classList.add('active'); showBgnBtn.classList.remove('active'); } else { showBgnBtn.classList.add('active'); showEurBtn.classList.remove('active'); } computeAndShow(); }
+
+    [amountEl, amountCurrencyEl, paidBgnEl, paidEurEl].forEach(el => { el.addEventListener('input', computeAndShow); el.addEventListener('change', computeAndShow); });
+
+    copyBtn.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(changeMain.textContent); copyBtn.textContent = 'Копирано!'; setTimeout(()=>copyBtn.textContent='Копирай',1400); }
+      catch(e){ copyBtn.textContent='Неуспешно'; setTimeout(()=>copyBtn.textContent='Копирай',1400); }
+    });
+
+    // Install prompt
+    window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredPrompt = e; installBtn.style.display='inline-block'; });
+    installBtn.addEventListener('click', async ()=> {
+      if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; deferredPrompt = null; }
+      else alert('За да инсталирате: използвайте "Add to Home Screen" в менюто на браузъра.');
+    });
+
+    // Register Service Worker (separate file)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(() => console.log('Service worker registered.'))
+        .catch(err => console.warn('SW register failed:', err));
+    }
+
+    // Initial UI
+    amountEl.focus(); computeAndShow(); setActiveSegment();
+  })();
+  </script>
 </body>
 </html>
