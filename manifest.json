@@ -1,11 +1,12 @@
 {
   "name": "DualPay Calculator 2030D24",
   "short_name": "DualPay",
-  "description": "PWA приложение за изчисляване на ресто в BGN и EUR при фиксиран курс.",
-  "start_url": "./index.html",
+  "description": "PWA калкулатор за ресто в BGN и EUR при фиксиран курс 1.95583.",
+  "start_url": "/DualPay-Calculator-2030D24/",
+  "scope": "/DualPay-Calculator-2030D24/",
   "display": "standalone",
   "background_color": "#0f172a",
-  "theme_color": "#1e3a8a",
+  "theme_color": "#071130",
   "icons": [
     {
       "src": "icon-192.png",
